@@ -37,8 +37,21 @@ Cà phê Chum là một thương hiệu cà phê nổi tiếng tại Thái Nguy�
 
 
 **Các bảng có trong cơ sở dữ liệu:**
-- Bảng sản phẩm:
-  ![image](https://github.com/thuanthanhne/hequantricsdl/assets/168764508/9304d182-781a-455d-b696-1899c14979f5)
-- Bảng nhập hàng:
+- Sản phẩm:
+  ![image](https://github.com/thuanthanhne/hequantricsdl/assets/168764508/b3d88159-4da6-41ca-84c4-90553c965b08)
+
+- Nhập hàng:
   ![image](https://github.com/thuanthanhne/hequantricsdl/assets/168764508/3cd06ac6-19a6-4217-a496-622513e8a0b4)
+
+- Nhân viên:
+  ![image](https://github.com/thuanthanhne/hequantricsdl/assets/168764508/551f130c-887c-424e-b19e-f29aa79d2684)
+
+- Khách hàng:
+  ![image](https://github.com/thuanthanhne/hequantricsdl/assets/168764508/4bd1d934-89dd-4e71-bbc7-5d8d81c7c26b)
+
+- Đơn hàng:
+  ![image](https://github.com/thuanthanhne/hequantricsdl/assets/168764508/9f8ac750-8429-4c40-9c41-fd6d75640d04)
+
+
+
 
