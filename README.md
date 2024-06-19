@@ -21,7 +21,7 @@
 
 - Báo cáo doanh thu theo ngày
 - Báo cáo doanh thu theo tháng
-- Báo cáo các sản phẩm bán chạy nhất của cửa hàng
+- Tạo thủ tục báo cáo sản phẩm bán được theo thứ tự giảm dần
 - Tính toán tiền lương của nhân viên trong 1 tháng
 
 
@@ -189,7 +189,7 @@ END;
 
 
 
---Tạo thủ tục báo cáo sản phẩm bán chạy nhất--
+--Tạo thủ tục báo cáo sản phẩm bán được theo thứ tự giảm dần--
 GO
 CREATE PROCEDURE TopSellingProduct
 
@@ -365,8 +365,7 @@ EXEC RevenueByMonth 6, 2024;
 
 
 
---Yêu cầu 3: Báo cáo sản phẩm bán chạy nhất--
-
+--Yêu cầu 3: Báo cáo sản phẩm bán được theo thứ tự giảm dần--
 
 EXEC TopSellingProduct;
 
