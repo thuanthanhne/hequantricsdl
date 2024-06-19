@@ -96,6 +96,21 @@
 
 
 
+- Bảng Hoadon:
+  ![image](https://github.com/thuanthanhne/hequantricsdl/assets/168764508/541ea3f0-06be-4d27-9dac-f0fed1ccffd0)
+
+
+
+
+
+
+  - Bảng Chitiethoadon:
+    ![image](https://github.com/thuanthanhne/hequantricsdl/assets/168764508/cc8082c3-3025-475d-8cb7-e0f8d192de36)
+
+
+
+
+
 
 
 
@@ -200,6 +215,7 @@ END;
 
 -- Sử dụng Trigger và Cursor để tính toán tổng tiền của các chi tiết hoá đơn sau khi chúng được thêm mới vào bảng Chitiethoadon, và sau đó cập nhật tổng tiền này vào bảng Hoadon--
 
+
 GO
 
 CREATE TRIGGER CalculateRevenue
@@ -212,59 +228,72 @@ AS
 
 BEGIN
 
-    -- Khai báo biến cục bộ
+    DECLARE @HoadonID INT
     
-    DECLARE @InsertedHoadonID INT;
-    
-    DECLARE @TongTien MONEY;
-    
-    
-    -- Cursor để duyệt qua các hoá đơn có trong bảng inserted
-    
-    DECLARE cur CURSOR LOCAL FAST_FORWARD FOR
-    
-    SELECT DISTINCT HoadonID
-    
-    FROM inserted;
+    DECLARE @TongTien MONEY
     
 
-    OPEN cur;
+    -- Khai báo cursor để duyệt từng dòng trong bảng inserted
+    DECLARE Cur CURSOR FOR
     
-    FETCH NEXT FROM cur INTO @InsertedHoadonID;
+    SELECT HoadonID, SUM(Soluong * Gia) AS TongTien
+    
+    FROM inserted
+    
+    GROUP BY HoadonID
     
 
-    -- Duyệt qua từng hoá đơn trong bảng inserted và tính tổng tiền
+    -- Mở cursor
+    
+    OPEN Cur
+    
+
+    -- Đọc dữ liệu từ cursor
+    
+    FETCH NEXT FROM Cur INTO @HoadonID, @TongTien
+    
+
+    -- Vòng lặp xử lý từng dòng
     
     WHILE @@FETCH_STATUS = 0
     
     BEGIN
-    
-        SELECT @TongTien = SUM(Soluong * Gia)
+        -- Kiểm tra giá trị NULL trước khi cập nhật
         
-        FROM inserted
+        IF @TongTien IS NOT NULL AND @HoadonID IS NOT NULL
         
-        WHERE HoadonID = @InsertedHoadonID;
+        BEGIN
+        
+            -- Cập nhật bảng Hoadon với tổng tiền tương ứng
+            
+            UPDATE Hoadon
+            
+            SET TongTien = @TongTien
+            
+            WHERE HoadonID = @HoadonID
+            
+        END
         
 
-        -- Cập nhật tổng tiền vào bảng Hoadon
+        -- Đọc dòng tiếp theo
         
-        UPDATE Hoadon
+        FETCH NEXT FROM Cur INTO @HoadonID, @TongTien
         
-        SET TongTien = @TongTien
-        
-        
-        WHERE HoadonID = @InsertedHoadonID;
-        
-
-        FETCH NEXT FROM cur INTO @InsertedHoadonID;
-        
-    END;
-
-    CLOSE cur;
+    END
     
-    DEALLOCATE cur;
+
+    -- Đóng cursor
     
-END;
+    CLOSE Cur
+    
+
+    -- Hủy cursor
+    
+    DEALLOCATE Cur
+    
+END
+
+GO
 
 
 
@@ -289,9 +318,12 @@ BEGIN
     
     DECLARE @TongDoanhThu MONEY;
     
+    
     SELECT @TongDoanhThu = SUM(TongTien)
     
+    
     FROM Hoadon
+    
     
     WHERE MONTH(NgayHoadon) = @Thang AND YEAR(NgayHoadon) = @Nam;
     
@@ -300,7 +332,9 @@ BEGIN
     
     INSERT INTO Luongnhanvien (NhanvienID, Thang, Nam, LuongCoban, Thuong, TongLuong)
     
+    
     SELECT nv.NhanvienID, @Thang, @Nam, nv.LuongNhanvien, 0.05 * @TongDoanhThu, nv.LuongNhanvien + 0.05 * @TongDoanhThu
+    
     
     FROM Nhanvien nv;
     
@@ -318,17 +352,21 @@ END;
 
 --Yêu cầu 1: Báo cáo doanh thu theo ngày--
 
-EXEC CalculateRevenueByDay '2023-06-18';
+
+EXEC CalculateRevenueByDay '2024-06-01';
 
 
 
 --Yêu cầu 2: Báo cáo doanh thu theo tháng--
 
-EXEC RevenueByMonth 06, 2023;
+
+EXEC RevenueByMonth 6, 2024;
+
 
 
 
 --Yêu cầu 3: Báo cáo sản phẩm bán chạy nhất--
+
 
 EXEC TopSellingProduct;
 
@@ -336,7 +374,8 @@ EXEC TopSellingProduct;
 
 --Yêu cầu 4: Tính lương tháng cho nhân viên--
 
-EXEC CalculateEmployeeSalary 6, 2023;
+
+EXEC CalculateEmployeeSalary 6, 2024;
 
 
 
@@ -345,7 +384,7 @@ EXEC CalculateEmployeeSalary 6, 2023;
 
 SELECT * FROM Luongnhanvien
 
-WHERE Thang = 6 AND Nam = 2023;
+WHERE Thang = 6 AND Nam = 2024;
 
   
 
